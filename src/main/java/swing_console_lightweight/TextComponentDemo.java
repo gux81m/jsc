@@ -31,10 +31,10 @@ public class TextComponentDemo {
                 button.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent arg0) {
-                        textComponent.getCharacters()[0][0] = 'A';
-                        textComponent.getCharacters()[0][textComponent.getMaxCols() - 1] = 'B';
-                        textComponent.getCharacters()[textComponent.getMaxLines() - 1][0] = 'C';
-                        textComponent.getCharacters()[textComponent.getMaxLines() - 1][textComponent.getMaxCols() - 1] = 'D';
+//                        textComponent.getCharacters()[0][0] = 'A';
+//                        textComponent.getCharacters()[0][textComponent.getMaxCols() - 1] = 'B';
+//                        textComponent.getCharacters()[textComponent.getMaxLines() - 1][0] = 'C';
+//                        textComponent.getCharacters()[textComponent.getMaxLines() - 1][textComponent.getMaxCols() - 1] = 'D';
 
                         textComponent.repaint();
                     }
