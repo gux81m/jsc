@@ -3,6 +3,7 @@ package basic_console;
 import com.pump.swing.BasicConsole;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -12,21 +13,22 @@ import java.io.PrintStream;
  * https://github.com/mickleness/pumpernickel
  */
 
-public class JavaConsole extends JFrame {
+public class JavaConsole {
+    private BasicConsole console;
+    private JPanel controls;
+    private JTextField commandLine;
     private JPanel buttonPanel;
     private JButton buttonExit;
-    private BasicConsole console;
     private static PrintStream out;
-    private JTextField commandLine;
 
     public JavaConsole() {
-        setTitle("Console Application");
-        console = new BasicConsole(false, true);
-        console.setPreferredSize(new Dimension(1024, 768));
+        console = BasicConsole.create("Console Application", false, true, true);
         console.setLineWrap(true);
+        console.setWrapStyleWord(true);
+
+        controls = new JPanel();
 
         commandLine = new JTextField();
-        commandLine.setPreferredSize(new Dimension(120, 30));
 
         buttonPanel = new JPanel();
         buttonExit = new JButton("Exit");
@@ -61,17 +63,16 @@ public class JavaConsole extends JFrame {
             public void keyReleased(KeyEvent e) {}
         });
 
-        add(console);
-        add(commandLine);
-        add(buttonPanel);
+        controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+        controls.add(commandLine);
+        controls.add(buttonPanel);
 
-        setLayout(new FlowLayout());
-        pack();
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
+        Container rootPanel = console.getRootPane().getContentPane();
+        rootPanel.setLayout(new BoxLayout(rootPanel, BoxLayout.Y_AXIS));
+        rootPanel.add(controls);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         JavaConsole javaConsole = new JavaConsole();
         out = javaConsole.console.createPrintStream(false);
     }
