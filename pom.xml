@@ -29,8 +29,13 @@
 
         <dependency>
             <groupId>com.pump</groupId>
-            <artifactId>pump-swing</artifactId>
+            <artifactId>pumpernickel</artifactId>
             <version>1.0.00</version>
+        </dependency>
+        <dependency>
+            <groupId>com.pump</groupId>
+            <artifactId>pump-common</artifactId>
+            <version>1.0.01-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
