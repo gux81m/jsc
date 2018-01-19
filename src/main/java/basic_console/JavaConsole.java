@@ -37,6 +37,7 @@ public class JavaConsole implements Runnable {
         controls = new JPanel();
 
         commandLine = new JTextField();
+        telnetConnector.setCommandLine(commandLine);
 
         buttonPanel = new JPanel();
         buttonExit = new JButton("Exit");
@@ -80,11 +81,11 @@ public class JavaConsole implements Runnable {
                     String cmd = commandLine.getText();
                     System.out.println(cmd + "ctrl+space");
                     try {
-                        telnetConnector.sendCommand(cmd);
+                        telnetConnector.sendAutoCompletion(cmd);
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
-                    commandLine.setText("");
+//                    commandLine.setText("");
                 }
             }
 

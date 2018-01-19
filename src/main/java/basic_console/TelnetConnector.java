@@ -7,6 +7,7 @@ import org.apache.commons.net.telnet.TelnetClient;
 import org.apache.commons.net.telnet.TelnetNotificationHandler;
 import org.apache.commons.net.telnet.TerminalTypeOptionHandler;
 
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +20,8 @@ public class TelnetConnector implements Runnable, TelnetNotificationHandler {
     private String remoteIp;
     private int remotePort;
     private String returnString;
+    private JTextField commandLine;
+    private boolean isTabPressed;
 
     TelnetConnector(String remoteIp, int remotePort, PrintStream out) throws IOException {
         this.remoteIp = remoteIp;
@@ -40,15 +43,39 @@ public class TelnetConnector implements Runnable, TelnetNotificationHandler {
         }
     }
 
+    public void setCommandLine(JTextField commandLine) {
+        this.commandLine = commandLine;
+    }
+
     public void connect() throws IOException {
         tc.connect(remoteIp, remotePort);
     }
 
-    public void sendCommand(String cmd) throws IOException {
+    public void flush() throws IOException {
+        OutputStream outstr = tc.getOutputStream();
+        outstr.flush();
+    }
+
+    public void writeCommandToStream(String cmd) throws IOException {
         OutputStream outstr = tc.getOutputStream();
         outstr.write(cmd.getBytes());
-        outstr.write(KeyEvent.VK_TAB);
-        outstr.flush();
+    }
+
+    public void writeCommandToStream(int cmd) throws IOException {
+        OutputStream outstr = tc.getOutputStream();
+        outstr.write(cmd);
+    }
+
+    public void sendAutoCompletion(String cmd) throws IOException {
+        writeCommandToStream(cmd);
+        writeCommandToStream(KeyEvent.VK_TAB);
+        isTabPressed = true;
+    }
+
+    public void sendCommand(String cmd) throws IOException {
+        writeCommandToStream(cmd);
+        writeCommandToStream("\n");
+        flush();
     }
 
     /***
@@ -70,6 +97,18 @@ public class TelnetConnector implements Runnable, TelnetNotificationHandler {
                     returnString = new String(buff, 0, ret_read);
                     System.out.print(returnString);
                     out.print(returnString);
+                    if (isTabPressed) {
+                        commandLine.setText(returnString);
+                        commandLine.setCaretPosition(returnString.length());
+                        for (int i = 0; i < returnString.length(); i++) {
+                            writeCommandToStream(KeyEvent.VK_BACK_SPACE);
+                        }
+                        flush();
+                        isTabPressed = false;
+                    } else {
+                        commandLine.setText("");
+                    }
+
                 }
             } while (ret_read >= 0);
         } catch (IOException e) {
